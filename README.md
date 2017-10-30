@@ -1,5 +1,7 @@
 # vuejs-table
 
+[![Join the chat at https://gitter.im/vuejs-table/Lobby](https://badges.gitter.im/vuejs-table/Lobby.svg)](https://gitter.im/vuejs-table/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 > Tables for vuejs
 
 Your task is to make the table;
