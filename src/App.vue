@@ -51,8 +51,10 @@ export default {
   computed: {
     filteredPatients: function () {
       return this.patients.filter(item => {
-        let itemValues = Object.entries(item) // Get all the entries ([key, value] pairs) from object.
-        return itemValues.some(property  => { // Looking if any value returns true.
+        // Get all the entries ([key, value] pairs) from object.
+        let itemValues = Object.entries(item)
+        // Looking if any value returns true.
+        return itemValues.some(property  => {
           let key = property[0]
           let value = property[1]
           switch (key) {
@@ -91,7 +93,7 @@ export default {
       let now = new Date()
       let birthDate = new Date(value)
       let age = now.getUTCFullYear() - birthDate.getUTCFullYear()
-      
+
       if (now.getUTCMonth() < birthDate.getUTCMonth()) { // For setting up the edge cases of age
         age--
       }else if (now.getUTCMonth() === birthDate.getUTCMonth()) {
