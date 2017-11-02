@@ -128,8 +128,7 @@ export default {
       // Check if the user has clicked on a SPAN or TH element to route accordingly.
       let selectedHeader = (event.target.nodeName !== "TH") ? event.path[1] : event.target
       // Declare a key with which we can access "dynamically" certain columns.
-      let key = selectedHeader.firstChild.nodeValue.toLowerCase()
-
+      let key = field || selectedHeader.firstChild.nodeValue.toLowerCase()
       // If we have selected a different column we start with ordering in ascending order.
       if(selectedHeader != this.sorting.selectedHeader) {
         this.sorting.asc = true
@@ -139,11 +138,6 @@ export default {
       span.textContent = (this.sorting.asc) ? " (asc)" : " (desc)"
       span.id = "sort-icon"
       selectedHeader.append(span)
-
-      // If the key has been added manually to the function.
-      if(field) {
-        key = field
-      }
 
       this.patients.sort((a, b) => {
         // Transform any string to lowercases so the sorting would not be case sensitive.
