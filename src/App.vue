@@ -78,7 +78,8 @@ export default {
     dateTime: function (value) {
       if (!value) return ''
 
-      let date = new Date(value) // Format value to Date object for easier data manipulation.
+      // Format value to Date object for easier data manipulation.
+      let date = new Date(value) 
       // Adding zeroes in front for readability.
       let hour = addZero(date.getUTCHours())
       let minutes =  addZero(date.getUTCMinutes())
@@ -88,16 +89,17 @@ export default {
       return `${day}-${month}-${date.getUTCFullYear()} ${hour}:${minutes}`
     },
     age: function (value) {
-      if (!value) return '' // To ignore the ages over 999 ie. dates.
+      if (!value) return ''
 
       let now = new Date()
       let birthDate = new Date(value)
       let age = now.getUTCFullYear() - birthDate.getUTCFullYear()
 
-      if (now.getUTCMonth() < birthDate.getUTCMonth()) { // For setting up the edge cases of age
+      if (now.getUTCMonth() < birthDate.getUTCMonth()) {
         age--
       }else if (now.getUTCMonth() === birthDate.getUTCMonth()) {
-        if(now.getUTCDate() <= birthDate.getUTCDate()){
+        // For setting up the edge cases of age
+        if(now.getUTCDate() <= birthDate.getUTCDate()) { 
           age--
         }
       }
