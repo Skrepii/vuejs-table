@@ -42,36 +42,17 @@ export default {
         { name: 'Ben Johnson', age: "1937-01-05", cpr: '0003', diagnosis: 'Concussion', admitted: new Date().setHours(10) },
       ],
       sorting: {
-        selectedHeader: null,
-        asc: true
+        key: null,
+        asc: false
       },
       filterQuery: ''
     }
   },
   computed: {
     filteredPatients: function () {
-      return this.patients.filter(item => {
-        // Get all the entries ([key, value] pairs) from object.
-        let itemValues = Object.entries(item)
-        // Looking if any value returns true.
-        return itemValues.some(property  => {
-          let key = property[0]
-          let value = property[1]
-          switch (key) {
-            case "admitted":
-              return this.$options.filters.dateTime(value).includes(this.filterQuery)
-            case "age":
-              return this.$options.filters.age(value).includes(this.filterQuery)
-            case "cpr":
-              let birthDate = itemValues.find(item => item[0] === "age")[1]
-              return this.$options.filters.cpr(value, birthDate).includes(this.filterQuery)
-            default:
-              return value.toString()
-                .toLowerCase()
-                .includes(this.filterQuery.toLowerCase())
-          }
-        })
-      })
+      return this.patients
+      .filter(this.basicFiltering)
+      .sort(this.basicSorting)
     }
   },
   filters: {
@@ -130,32 +111,57 @@ export default {
       // Declare a key with which we can access "dynamically" certain columns.
       let key = field || selectedHeader.firstChild.nodeValue.toLowerCase()
       // If we have selected a different column we start with ordering in ascending order.
-      if(selectedHeader != this.sorting.selectedHeader) {
-        this.sorting.asc = true
+      if(key != this.sorting.key) {
+        this.sorting.asc = false
       }
 
-      span = document.createElement("span") // Creating span element for asc, desc indication on column.
+      this.sorting.asc = !this.sorting.asc
+      this.sorting.key = key // Indicate which column we have ordered by.
+
+      // Creating span element for asc, desc indication on column.
+      span = document.createElement("span")
       span.textContent = (this.sorting.asc) ? " (asc)" : " (desc)"
       span.id = "sort-icon"
       selectedHeader.append(span)
+    },
+    basicSorting: function (a, b) {
+      let key = this.sorting.key
+      if (!key) return 0
 
-      this.patients.sort((a, b) => {
-        // Transform any string to lowercases so the sorting would not be case sensitive.
-        a = (typeof a[key] === 'string') ? a[key].toLowerCase() : a[key]
-        b = (typeof b[key] === 'string') ? b[key].toLowerCase() : b[key]
+      // Transform any string to lowercases so the sorting would not be case sensitive.
+      a = (typeof a[key] === 'string') ? a[key].toLowerCase() : a[key]
+      b = (typeof b[key] === 'string') ? b[key].toLowerCase() : b[key]
 
-        let asc = 0
-        if (a > b) {
-          asc = 1
-        } else if (a < b) {
-          asc = -1
-        }
-        // If the this.sorting.asc is false then sort the list desc (in reverse).
-        return (this.sorting.asc) ? asc : -asc
-      })
-
-      this.sorting.asc = !this.sorting.asc
-      this.sorting.selectedHeader = selectedHeader // Indicate which column we have ordered by.
+      let asc = 0
+      if (a > b) {
+        asc = 1
+      } else if (a < b) {
+        asc = -1
+      }
+      // If the this.sorting.asc is false then sort the list desc (in reverse).
+      return (this.sorting.asc) ? asc : -asc
+    },
+    basicFiltering: function (item) {
+      // Get all the entries ([key, value] pairs) from object.
+        let itemValues = Object.entries(item)
+        // Looking if any value returns true.
+        return itemValues.some(property  => {
+          let key = property[0]
+          let value = property[1]
+          switch (key) {
+            case "admitted":
+              return this.$options.filters.dateTime(value).includes(this.filterQuery)
+            case "age":
+              return this.$options.filters.age(value).includes(this.filterQuery)
+            case "cpr":
+              let birthDate = itemValues.find(item => item[0] === "age")[1]
+              return this.$options.filters.cpr(value, birthDate).includes(this.filterQuery)
+            default:
+              return value.toString()
+                .toLowerCase()
+                .includes(this.filterQuery.toLowerCase())
+          }
+        })
     }
   }
 }
